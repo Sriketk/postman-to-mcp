@@ -1,0 +1,328 @@
+{
+  "name": "Packages",
+  "item": [
+    {
+      "name": "GetPackageDetails",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function() {\r",
+              "pm.response.to.have.status(200);\r",
+              "}\r",
+              ")"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "FacilityID",
+            "value": "{{facility_id}}"
+          }
+        ],
+        "url": {
+          "raw": "{{api_url}}/v1/packages/:package_id/details",
+          "host": [
+            "{{api_url}}"
+          ],
+          "path": [
+            "v1",
+            "packages",
+            ":package_id",
+            "details"
+          ],
+          "variable": [
+            {
+              "key": "package_id",
+              "value": "<string>",
+              "description": "the string ID of the package for which to fetch origin details"
+            }
+          ]
+        },
+        "description": "Get the origin info of a cannabis package by its ID."
+      },
+      "response": [
+        {
+          "name": "GetPackageDetails",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "FacilityID",
+                "value": "{{facility_id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/v1/packages/:package_id/details",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "v1",
+                "packages",
+                ":package_id",
+                "details"
+              ],
+              "variable": [
+                {
+                  "key": "package_id",
+                  "value": "CADEMMN-20230119-002",
+                  "description": "the string ID of the package for which to fetch origin details"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Date",
+              "value": "Tue, 15 Apr 2025 19:01:29 GMT"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=UTF-8"
+            },
+            {
+              "key": "Transfer-Encoding",
+              "value": "chunked"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Strict-Transport-Security",
+              "value": "max-age=31536000; includeSubDomains"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"Success\",\n    \"status\": 200,\n    \"data\": [\n        {\n            \"package_id\": \"CADEMMN-20230119-002\",\n            \"origin_facility_id\": \"595ab07b7a5484d16424a686\",\n            \"origin_facility_name\": \"Manufacturing - Downtown LA\",\n            \"origin_package_id\": \"CADEMCL-20210603-003\",\n            \"uom_type\": \"weight\",\n            \"size\": 23,\n            \"created_by\": \"htuteja@flourishsoftware.com\",\n            \"created_timestamp\": \"2023-01-19T16:59:17Z\",\n            \"origin_harvest_id\": null,\n            \"origin_harvest_status_id\": null,\n            \"origin_harvest_name\": null,\n            \"origin_harvest_status\": null,\n            \"origin_manufacturing_run_id\": \"801\",\n            \"origin_manufacturing_run_reference_id\": \"MP-20230119152453-801\",\n            \"origin_manufacturing_run_name\": \"Ethanol Extraction 20230119\",\n            \"origin_plant_id\": null,\n            \"bom_id\": null,\n            \"bom_name\": null,\n            \"bom_run_id\": null,\n            \"origin_group_id\": null,\n            \"origin_group_name\": null\n        },\n        {\n            \"package_id\": \"CADEMMN-20230119-002\",\n            \"origin_facility_id\": \"595ab07b7a5484d16424a686\",\n            \"origin_facility_name\": \"Manufacturing - Downtown LA\",\n            \"origin_package_id\": \"CADEMCL-20211104-002\",\n            \"uom_type\": \"weight\",\n            \"size\": 100,\n            \"created_by\": \"htuteja@flourishsoftware.com\",\n            \"created_timestamp\": \"2023-01-19T16:59:17Z\",\n            \"origin_harvest_id\": null,\n            \"origin_harvest_status_id\": null,\n            \"origin_harvest_name\": null,\n            \"origin_harvest_status\": null,\n            \"origin_manufacturing_run_id\": \"801\",\n            \"origin_manufacturing_run_reference_id\": \"MP-20230119152453-801\",\n            \"origin_manufacturing_run_name\": \"Ethanol Extraction 20230119\",\n            \"origin_plant_id\": null,\n            \"bom_id\": null,\n            \"bom_name\": null,\n            \"bom_run_id\": null,\n            \"origin_group_id\": null,\n            \"origin_group_name\": null\n        },\n        {\n            \"package_id\": \"CADEMMN-20230119-002\",\n            \"origin_facility_id\": \"595ab07b7a5484d16424a686\",\n            \"origin_facility_name\": \"Manufacturing - Downtown LA\",\n            \"origin_package_id\": \"CADEMCL-20210111-006\",\n            \"uom_type\": \"weight\",\n            \"size\": 20,\n            \"created_by\": \"htuteja@flourishsoftware.com\",\n            \"created_timestamp\": \"2023-01-19T16:59:17Z\",\n            \"origin_harvest_id\": null,\n            \"origin_harvest_status_id\": null,\n            \"origin_harvest_name\": null,\n            \"origin_harvest_status\": null,\n            \"origin_manufacturing_run_id\": \"801\",\n            \"origin_manufacturing_run_reference_id\": \"MP-20230119152453-801\",\n            \"origin_manufacturing_run_name\": \"Ethanol Extraction 20230119\",\n            \"origin_plant_id\": null,\n            \"bom_id\": null,\n            \"bom_name\": null,\n            \"bom_run_id\": null,\n            \"origin_group_id\": null,\n            \"origin_group_name\": null\n        },\n        {\n            \"package_id\": \"CADEMMN-20230119-002\",\n            \"origin_facility_id\": \"595ab07b7a5484d16424a686\",\n            \"origin_facility_name\": \"Manufacturing - Downtown LA\",\n            \"origin_package_id\": \"CADEMMN-20220107-003\",\n            \"uom_type\": \"weight\",\n            \"size\": 5,\n            \"created_by\": \"htuteja@flourishsoftware.com\",\n            \"created_timestamp\": \"2023-01-19T16:59:17Z\",\n            \"origin_harvest_id\": null,\n            \"origin_harvest_status_id\": null,\n            \"origin_harvest_name\": null,\n            \"origin_harvest_status\": null,\n            \"origin_manufacturing_run_id\": \"801\",\n            \"origin_manufacturing_run_reference_id\": \"MP-20230119152453-801\",\n            \"origin_manufacturing_run_name\": \"Ethanol Extraction 20230119\",\n            \"origin_plant_id\": null,\n            \"bom_id\": null,\n            \"bom_name\": null,\n            \"bom_run_id\": null,\n            \"origin_group_id\": null,\n            \"origin_group_name\": null\n        },\n        {\n            \"package_id\": \"CADEMMN-20230119-002\",\n            \"origin_facility_id\": \"595ab07b7a5484d16424a686\",\n            \"origin_facility_name\": \"Manufacturing - Downtown LA\",\n            \"origin_package_id\": \"CADEMCL-20230105-001\",\n            \"uom_type\": \"weight\",\n            \"size\": 500,\n            \"created_by\": \"htuteja@flourishsoftware.com\",\n            \"created_timestamp\": \"2023-01-19T16:59:17Z\",\n            \"origin_harvest_id\": null,\n            \"origin_harvest_status_id\": null,\n            \"origin_harvest_name\": null,\n            \"origin_harvest_status\": null,\n            \"origin_manufacturing_run_id\": \"801\",\n            \"origin_manufacturing_run_reference_id\": \"MP-20230119152453-801\",\n            \"origin_manufacturing_run_name\": \"Ethanol Extraction 20230119\",\n            \"origin_plant_id\": null,\n            \"bom_id\": null,\n            \"bom_name\": null,\n            \"bom_run_id\": null,\n            \"origin_group_id\": null,\n            \"origin_group_name\": null\n        },\n        {\n            \"package_id\": \"CADEMMN-20230119-002\",\n            \"origin_facility_id\": \"595ab07b7a5484d16424a686\",\n            \"origin_facility_name\": \"Manufacturing - Downtown LA\",\n            \"origin_package_id\": \"CADEMCL-20210111-008\",\n            \"uom_type\": \"weight\",\n            \"size\": 200,\n            \"created_by\": \"htuteja@flourishsoftware.com\",\n            \"created_timestamp\": \"2023-01-19T16:59:17Z\",\n            \"origin_harvest_id\": null,\n            \"origin_harvest_status_id\": null,\n            \"origin_harvest_name\": null,\n            \"origin_harvest_status\": null,\n            \"origin_manufacturing_run_id\": \"801\",\n            \"origin_manufacturing_run_reference_id\": \"MP-20230119152453-801\",\n            \"origin_manufacturing_run_name\": \"Ethanol Extraction 20230119\",\n            \"origin_plant_id\": null,\n            \"bom_id\": null,\n            \"bom_name\": null,\n            \"bom_run_id\": null,\n            \"origin_group_id\": null,\n            \"origin_group_name\": null\n        },\n        {\n            \"package_id\": \"CADEMMN-20230119-002\",\n            \"origin_facility_id\": \"595ab07b7a5484d16424a686\",\n            \"origin_facility_name\": \"Manufacturing - Downtown LA\",\n            \"origin_package_id\": \"CADEMMN-20230117-001\",\n            \"uom_type\": \"weight\",\n            \"size\": 1924,\n            \"created_by\": \"htuteja@flourishsoftware.com\",\n            \"created_timestamp\": \"2023-01-19T16:59:17Z\",\n            \"origin_harvest_id\": null,\n            \"origin_harvest_status_id\": null,\n            \"origin_harvest_name\": null,\n            \"origin_harvest_status\": null,\n            \"origin_manufacturing_run_id\": \"801\",\n            \"origin_manufacturing_run_reference_id\": \"MP-20230119152453-801\",\n            \"origin_manufacturing_run_name\": \"Ethanol Extraction 20230119\",\n            \"origin_plant_id\": null,\n            \"bom_id\": null,\n            \"bom_name\": null,\n            \"bom_run_id\": null,\n            \"origin_group_id\": null,\n            \"origin_group_name\": null\n        }\n    ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "GetPackages",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function() {\r",
+              "pm.response.to.have.status(200);\r",
+              "}\r",
+              ")"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "FacilityID",
+            "value": "{{facility_id}}"
+          }
+        ],
+        "url": {
+          "raw": "{{api_url}}/v1/packages",
+          "host": [
+            "{{api_url}}"
+          ],
+          "path": [
+            "v1",
+            "packages"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "50",
+              "disabled": true
+            },
+            {
+              "key": "offset",
+              "value": "0",
+              "disabled": true
+            },
+            {
+              "key": "package_id",
+              "value": "1A40X0900002906000099999",
+              "description": "Specify packages by ID.\n\nParameter can be passed multiple times to target multiple specified packages.\n\ntype: [string]",
+              "disabled": true
+            },
+            {
+              "key": "package_status",
+              "value": "Shipped",
+              "description": "Specify packages by status.\n\nOptions: Created, Assigned to order, Shipped, Consumed, Archived, Cancelled\n\ntype: [string]",
+              "disabled": true
+            },
+            {
+              "key": "include_origin_harvest",
+              "value": "false",
+              "description": "Flag to include origin harvest info, if any, for each package returned in the data set.\n\nNote: Passing this parameter with a value of `true` diminishes the performance of the endpoint.\n\ntype: boolean",
+              "disabled": true
+            },
+            {
+              "key": "last_updated_timestamp_start",
+              "value": "2020-01-02T15:04:05.000Z",
+              "description": "Date/time order was updated, range start.\n\ntype: datetime",
+              "disabled": true
+            },
+            {
+              "key": "last_updated_timestamp_end",
+              "value": "2020-01-03T15:04:05.000Z",
+              "description": "Date/time order was updated, range end.\n\ntype: datetime",
+              "disabled": true
+            }
+          ]
+        },
+        "description": "Get current cannabis packages for a single facility. `package_id` is the unique identifier for the package record returned."
+      },
+      "response": [
+        {
+          "name": "GetPackages",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "FacilityID",
+                "value": "{{facility_id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/v1/packages?limit=2&last_updated_timestamp_start=2020-01-02T15:04:05.000Z&include_origin_harvest=true",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "v1",
+                "packages"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "2"
+                },
+                {
+                  "key": "last_updated_timestamp_start",
+                  "value": "2020-01-02T15:04:05.000Z"
+                },
+                {
+                  "key": "include_origin_harvest",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "description": ""
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"Success\",\n    \"status\": 200,\n    \"meta\": {\n        \"total\": 71574,\n        \"offset\": 0,\n        \"limit\": 50,\n        \"count\": 3,\n        \"next\": \"{{api_url}}/v1/packages?last_updated_timestamp_start=2020-01-02T15:04:05.000Z&offset=50&limit=50\"\n    },\n    \"data\": [\n        {\n            \"item_class\": \"Buds\",\n            \"item_category\": \"Lab Sample Flower\",\n            \"external\": false,\n            \"item_id\": \"10\",\n            \"item_name\": \"Lab Sample Flower\",\n            \"item_retail_display_name\": \"Lab Sample Flower\",\n            \"item_variation_id\": null,\n            \"variation_name\": null,\n            \"variation_retail_display_name\": \"\",\n            \"sku\": \"1.5.29.10.0\",\n            \"strain_id\": \"945c1c52\",\n            \"strain_name\": \"Fire OG1\",\n            \"package_id\": \"20171215-001\",\n            \"original_package_id\": \"20171215-001\",\n            \"package_status\": \"Assigned to order\",\n            \"lot_number\": null,\n            \"original_qty\": 0,\n            \"qty\": 1,\n            \"available_qty\": 0,\n            \"non_available_qty\": 1,\n            \"uom_id\": 2,\n            \"uom\": \"g\",\n            \"uom_description\": \"Gram\",\n            \"area_id\": null,\n            \"area_name\": null,\n            \"location_id\": null,\n            \"location_name\": null,\n            \"is_locked\": false,\n            \"lock_code\": {\n                \"name\": null,\n                \"can_add_to_outbound_order\": null,\n                \"exclude_from_global_inventory\": null\n            },\n            \"last_updated_by\": \"demo@flourishsoftware.com\",\n            \"last_updated_timestamp\": \"2021-11-15T15:18:46Z\",\n            \"created_by\": \"demo@flourishsoftware.com\",\n            \"created_timestamp\": \"2017-12-15T16:43:38Z\",\n            \"item_description\": \"Lab Sample Flower\",\n            \"brand\": null,\n            \"thc_ratio\": null,\n            \"cbd_ratio\": null,\n            \"price\": 0,\n            \"cost\": 0,\n            \"sell_by_lot\": false,\n            \"taxable\": false,\n            \"is_tax_exempt\": false,\n            \"unit_weight\": null,\n            \"weight_uom\": null,\n            \"weight_uom_description\": null,\n            \"unit_volume\": 0,\n            \"volume_uom\": null,\n            \"volume_uom_description\": null,\n            \"ref_field_1\": \"CLEANUP2\",\n            \"ref_field_2\": null,\n            \"ref_field_3\": null,\n            \"is_sample\": false,\n            \"extraction_method\": null,\n            \"production_date\": null,\n            \"harvest_date\": null,\n            \"lab_test_result_id\": null,\n            \"origin_harvest\": [\n                {\n                    \"package_id\": \"20171215-001\",\n                    \"origin_harvest_id\": \"FR000-20171213-002\",\n                    \"harvest_nickname\": \"G-121417\",\n                    \"harvest_date\": \"2017-12-13T23:41:06Z\",\n                    \"current_area_id\": \"TR000\"\n                }\n            ],\n            \"external_lab_test_results\": null\n        },\n        {\n            \"item_class\": \"Buds\",\n            \"item_category\": \"Lab Sample Flower\",\n            \"external\": false,\n            \"item_id\": \"10\",\n            \"item_name\": \"Lab Sample Flower\",\n            \"item_retail_display_name\": \"Lab Sample Flower\",\n            \"item_variation_id\": null,\n            \"variation_name\": null,\n            \"variation_retail_display_name\": \"\",\n            \"sku\": \"1.5.29.10.0\",\n            \"strain_id\": \"945c2062\",\n            \"strain_name\": \"Blue Dreamz\",\n            \"package_id\": \"20171215-002\",\n            \"original_package_id\": \"20171215-002\",\n            \"package_status\": \"Assigned to order\",\n            \"lot_number\": null,\n            \"original_qty\": 0,\n            \"qty\": 2,\n            \"available_qty\": 0,\n            \"non_available_qty\": 2,\n            \"uom_id\": 2,\n            \"uom\": \"g\",\n            \"uom_description\": \"Gram\",\n            \"area_id\": null,\n            \"area_name\": null,\n            \"location_id\": null,\n            \"location_name\": null,\n            \"is_locked\": false,\n            \"lock_code\": {\n                \"name\": null,\n                \"can_add_to_outbound_order\": null,\n                \"exclude_from_global_inventory\": null\n            },\n            \"last_updated_by\": \"demo@flourishsoftware.com\",\n            \"last_updated_timestamp\": \"2020-10-22T13:16:40Z\",\n            \"created_by\": \"demo@flourishsoftware.com\",\n            \"created_timestamp\": \"2017-12-15T16:47:39Z\",\n            \"item_description\": \"Lab Sample Flower\",\n            \"brand\": null,\n            \"thc_ratio\": null,\n            \"cbd_ratio\": null,\n            \"price\": 0,\n            \"cost\": 0,\n            \"sell_by_lot\": false,\n            \"taxable\": false,\n            \"is_tax_exempt\": false,\n            \"unit_weight\": null,\n            \"weight_uom\": null,\n            \"weight_uom_description\": null,\n            \"unit_volume\": 0,\n            \"volume_uom\": null,\n            \"volume_uom_description\": null,\n            \"ref_field_1\": \"CLEANUP2\",\n            \"ref_field_2\": null,\n            \"ref_field_3\": null,\n            \"is_sample\": false,\n            \"extraction_method\": null,\n            \"production_date\": null,\n            \"harvest_date\": null,\n            \"lab_test_result_id\": null,\n            \"origin_harvest\": [\n                {\n                    \"package_id\": \"20171215-002\",\n                    \"origin_harvest_id\": \"FR000-20171213-001\",\n                    \"harvest_nickname\": \"G-171213\",\n                    \"harvest_date\": \"2017-12-13T21:21:42Z\",\n                    \"current_area_id\": \"TR000\"\n                }\n            ],\n            \"external_lab_test_results\": null\n        },\n        {\n            \"item_class\": \"Buds\",\n            \"item_category\": \"Buds (by strain)\",\n            \"external\": false,\n            \"item_id\": \"1\",\n            \"item_name\": \"Blue Dream QP\",\n            \"item_retail_display_name\": \"Blue Dream QP Test\",\n            \"item_variation_id\": null,\n            \"variation_name\": null,\n            \"variation_retail_display_name\": \"\",\n            \"sku\": \"CUPCAKES\",\n            \"strain_id\": \"dd07178d045559e20e04\",\n            \"strain_name\": \"Blue Dream 2\",\n            \"package_id\": \"20171215-003\",\n            \"original_package_id\": \"20171215-003\",\n            \"package_status\": \"Assigned to order\",\n            \"lot_number\": null,\n            \"original_qty\": 0,\n            \"qty\": 1,\n            \"available_qty\": 0,\n            \"non_available_qty\": 1,\n            \"uom_id\": 1,\n            \"uom\": \"ea\",\n            \"uom_description\": \"Each\",\n            \"area_id\": \"59129766-9ebc-4b81-ac96-4b682a4969f3\",\n            \"area_name\": \"Inventory Room 001\",\n            \"location_id\": null,\n            \"location_name\": null,\n            \"is_locked\": false,\n            \"lock_code\": {\n                \"name\": null,\n                \"can_add_to_outbound_order\": null,\n                \"exclude_from_global_inventory\": null\n            },\n            \"last_updated_by\": \"demo@flourishsoftware.com\",\n            \"last_updated_timestamp\": \"2023-02-02T23:08:13Z\",\n            \"created_by\": \"demo@flourishsoftware.com\",\n            \"created_timestamp\": \"2017-12-15T16:49:05Z\",\n            \"item_description\": \"test\",\n            \"brand\": \"Dream blue\",\n            \"thc_ratio\": null,\n            \"cbd_ratio\": null,\n            \"price\": 79,\n            \"cost\": 103,\n            \"sell_by_lot\": false,\n            \"taxable\": false,\n            \"is_tax_exempt\": true,\n            \"unit_weight\": 14,\n            \"weight_uom\": \"lb\",\n            \"weight_uom_description\": \"Pound\",\n            \"unit_volume\": null,\n            \"volume_uom\": null,\n            \"volume_uom_description\": null,\n            \"ref_field_1\": \"CLEANUP2\",\n            \"ref_field_2\": null,\n            \"ref_field_3\": null,\n            \"is_sample\": false,\n            \"extraction_method\": null,\n            \"production_date\": null,\n            \"harvest_date\": null,\n            \"lab_test_result_id\": \"1\",\n            \"origin_harvest\": [\n                {\n                    \"package_id\": \"20171215-003\",\n                    \"origin_harvest_id\": \"FR000-20171213-001\",\n                    \"harvest_nickname\": \"G-171213\",\n                    \"harvest_date\": \"2017-12-13T21:21:42Z\",\n                    \"current_area_id\": \"TR000\"\n                }\n            ],\n            \"external_lab_test_results\": null\n        }\n    ]\n}"
+        }
+      ]
+    },
+    {
+      "name": "GetPackage",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function() {\r",
+              "pm.response.to.have.status(200);\r",
+              "}\r",
+              ")"
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "FacilityID",
+            "value": "{{facility_id}}"
+          }
+        ],
+        "url": {
+          "raw": "{{api_url}}/v1/packages/{package_id}",
+          "host": [
+            "{{api_url}}"
+          ],
+          "path": [
+            "v1",
+            "packages",
+            "{package_id}"
+          ],
+          "query": [
+            {
+              "key": "include_origin_harvest",
+              "value": "false",
+              "description": "Flag to include origin harvest info, if any, for each package returned in the data set.\nNote: Passing this parameter with a value of `true` diminishes the performance of the endpoint.\ntype: boolean",
+              "disabled": true
+            }
+          ]
+        },
+        "description": "Get a cannabis package by it's ID in Flourish."
+      },
+      "response": [
+        {
+          "name": "GetPackage",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "FacilityID",
+                "value": "{{facility_id}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_url}}/v1/packages/20171215-001?include_origin_harvest=true",
+              "host": [
+                "{{api_url}}"
+              ],
+              "path": [
+                "v1",
+                "packages",
+                "20171215-001"
+              ],
+              "query": [
+                {
+                  "key": "include_origin_harvest",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json",
+              "description": ""
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"Success\",\n    \"status\": 200,\n    \"data\": [\n        {\n            \"item_class\": \"Buds\",\n            \"item_category\": \"Lab Sample Flower\",\n            \"external\": false,\n            \"item_id\": \"10\",\n            \"item_name\": \"Lab Sample Flower\",\n            \"item_retail_display_name\": \"Lab Sample Flower\",\n            \"item_variation_id\": null,\n            \"variation_name\": null,\n            \"variation_retail_display_name\": \"\",\n            \"sku\": \"1.5.29.10.0\",\n            \"strain_id\": \"945c1c52\",\n            \"strain_name\": \"Fire OG1\",\n            \"package_id\": \"20171215-001\",\n            \"package_status\": \"Assigned to order\",\n            \"lot_number\": null,\n            \"original_qty\": 0,\n            \"qty\": 1,\n            \"available_qty\": 0,\n            \"non_available_qty\": 1,\n            \"uom_id\": 2,\n            \"uom\": \"g\",\n            \"uom_description\": \"Gram\",\n            \"area_id\": null,\n            \"area_name\": null,\n            \"location_id\": null,\n            \"location_name\": null,\n            \"is_locked\": false,\n            \"lock_code\": {\n                \"name\": null,\n                \"can_add_to_outbound_order\": null,\n                \"exclude_from_global_inventory\": null\n            },\n            \"last_updated_by\": \"jgarcia_demo@flourishsoftware.com\",\n            \"last_updated_timestamp\": \"2021-11-15T15:18:46Z\",\n            \"created_by\": \"jgarcia_demo@flourishsoftware.com\",\n            \"created_timestamp\": \"2017-12-15T16:43:38Z\",\n            \"item_description\": \"Lab Sample Flower\",\n            \"brand\": null,\n            \"thc_ratio\": null,\n            \"cbd_ratio\": null,\n            \"price\": 0,\n            \"cost\": 0,\n            \"sell_by_lot\": false,\n            \"taxable\": false,\n            \"is_tax_exempt\": false,\n            \"unit_weight\": null,\n            \"weight_uom\": null,\n            \"weight_uom_description\": null,\n            \"unit_volume\": 0,\n            \"volume_uom\": null,\n            \"volume_uom_description\": null,\n            \"ref_field_1\": \"CLEANUP2\",\n            \"ref_field_2\": null,\n            \"ref_field_3\": null,\n            \"is_sample\": false,\n            \"extraction_method\": null,\n            \"production_date\": null,\n            \"harvest_date\": null,\n            \"lab_test_result_id\": null,\n            \"origin_harvest\": [\n                {\n                    \"package_id\": \"20171215-001\",\n                    \"origin_harvest_id\": \"FR000-20171213-002\",\n                    \"harvest_nickname\": \"G-121417\",\n                    \"harvest_date\": \"2017-12-13T23:41:06Z\",\n                    \"current_area_id\": \"TR000\"\n                }\n            ],\n            \"external_lab_test_results\": null\n        }\n    ]\n}"
+        }
+      ]
+    }
+  ]
+}
