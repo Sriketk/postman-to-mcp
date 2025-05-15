@@ -1,0 +1,159 @@
+{
+  "name": "Facilities",
+  "item": [
+    {
+      "name": "GetFacility",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function() {\r",
+              "pm.response.to.have.status(200);\r",
+              "}\r",
+              ")"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/v1/facilities/{{facility_id}}",
+          "host": ["{{api_url}}"],
+          "path": ["v1", "facilities", "{{facility_id}}"]
+        },
+        "description": "Get a single facility by facility_id."
+      },
+      "response": [
+        {
+          "name": "GetFacility",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_url}}/v1/facilities/58b9b09d280e20ea24a126bb",
+              "host": ["{{api_url}}"],
+              "path": ["v1", "facilities", "58b9b09d280e20ea24a126bb"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=UTF-8"
+            },
+            {
+              "key": "Date",
+              "value": "Mon, 19 Aug 2019 04:36:04 GMT"
+            },
+            {
+              "key": "Content-Length",
+              "value": "708"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"Success\",\n    \"status\": 200,\n    \"data\": {\n        \"id\": \"58b9b09d280e20ea24a126bb\",\n        \"alias\": \"TEST GREENHOUSE ONE\",\n        \"company_email\": null,\n        \"company_phone_number\": \"1212607527\",\n        \"address_line_1\": \"GREENHOUSE ONE ADDRESS\",\n        \"address_line_2\": null,\n        \"city\": \"Las Vegas\",\n        \"state\": \"NV\",\n        \"zip_code\": \"89109\",\n        \"timezone\": \"America/Los_Angeles\",\n        \"country\": \"United States\",\n        \"billing\": {\n             \"address_line_1\": null,\n            \"address_line_2\": null,\n            \"city\": null,\n            \"state\": null,\n            \"zip_code\": null,\n            \"country\": null\n        },\n        \"local_license_number\": null,\n        \"license_number\": null,\n        \"license_type\": null,\n        \"external_id\": null,\n        \"website\": null,\n        \"notes\": null,\n        \"active\": true,\n        \"last_updated_timestamp\": \"2023-01-02T09:00:16Z\",\n        \"created_timestamp\": \"2018-06-12T02:42:52Z\",       \n        \"facility_type\": \"Grower\",\n        \"facility_name\": \"CULTIVATION FACILITY\",\n        \"contacts\": null,\n        \"total_open_balance\": null,\n        \"number_open_invoices\": null,\n        \"sales_rep_required_for_outbound\": true       \n    }\n     \n}"
+        }
+      ]
+    },
+    {
+      "name": "GetFacilities",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": ["pm.variables"],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{api_url}}/v1/facilities",
+          "host": ["{{api_url}}"],
+          "path": ["v1", "facilities"],
+          "query": [
+            {
+              "key": "limit",
+              "value": "50",
+              "description": "The maximum allowable limit is set to 50",
+              "disabled": true
+            },
+            {
+              "key": "offset",
+              "value": "0",
+              "disabled": true
+            },
+            {
+              "key": "facility_type",
+              "value": "Dispensary",
+              "description": "Options: \nLaboratory\nProcessor\nGrower\nDispensary\nDistributor\nManufacturer\nOther\nMicrobusiness\n\ntype: [string]",
+              "disabled": true
+            },
+            {
+              "key": "active",
+              "value": "true",
+              "description": "Optional. Filter for active or inactive facilities.",
+              "disabled": true
+            }
+          ]
+        },
+        "description": "Get facilities based on query parameters."
+      },
+      "response": [
+        {
+          "name": "GetFacilities",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_url}}/v1/facilities?limit=50",
+              "host": ["{{api_url}}"],
+              "path": ["v1", "facilities"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=UTF-8"
+            },
+            {
+              "key": "Date",
+              "value": "Fri, 26 Jul 2019 03:46:33 GMT"
+            },
+            {
+              "key": "Content-Length",
+              "value": "1473"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"message\": \"Success\",\n    \"status\": 200,\n    \"meta\": {\n        \"total\": 2,\n        \"offset\": 0,\n        \"limit\": 50,\n        \"count\": 2,\n        \"next\": \"\"\n    },\n    \"data\": [\n        {\n            \"id\": \"595ab07b7a5484d16424a686\",\n            \"alias\": \"NC Two\",\n            \"company_email\": null,\n            \"company_phone_number\": \"143234166\",\n            \"address_line_1\": \"123 Flourish Demo\",\n            \"address_line_2\": \"\",\n            \"city\": \"Atlanta\",\n            \"state\": \"GA\",\n            \"zip_code\": \"30303\",\n            \"timezone\": \"America/New_York\",\n            \"country\": \"United States\",\n            \"billing\": {\n                \"address_line_1\": null,\n                \"address_line_2\": null,\n                \"city\": null,\n                \"state\": null,\n                \"zip_code\": null,\n                \"country\": null\n            },\n            \"local_license_number\": null,\n            \"license_number\": \"12345\",\n            \"license_type\": null,\n            \"external_id\": null,\n            \"website\": null,\n            \"notes\": null,\n            \"active\": true,\n            \"last_updated_timestamp\": \"2022-07-14T10:04:54Z\",\n            \"created_timestamp\": \"2018-06-12T02:41:52Z\",\n            \"contacts\": null,\n            \"total_open_balance\": null,\n            \"number_open_invoices\": null,\n            \"synced_from_compliance\": 0,\n            \"facility_type\": \"Processor\",\n            \"facility_name\": \"Manufacturing Demo\",\n            \"sales_rep_required_for_outbound\": false\n        },\n        {\n            \"id\": \"5ba335ea4327a94530b0ac77\",\n            \"alias\":\"Distro Bv\",\n            \"company_email\": null,\n            \"company_phone_number\": \"44579763\",\n            \"address_line_1\": \"1 Distro Blvd\",\n            \"address_line_2\": null,\n            \"city\": \"Oakland\",\n            \"state\": \"CA\",\n            \"zip_code\": \"94607\",\n            \"timezone\": \"America/Los_Angeles\",\n            \"country\": \"United States\",\n            \"billing\": {\n                \"address_line_1\": null,\n                \"address_line_2\": null,\n                \"city\": null,\n                \"state\": null,\n                \"zip_code\": null,\n                \"country\": null\n\n            },\n            \"local_license_number\": null,\n            \"license_number\": null,\n            \"license_type\": null, \n            \"external_id\": null,\n            \"website\": null,\n            \"notes\": null,\n            \"active\": true,\n            \"contacts\": null,\n            \"total_open_balance\": null,\n            \"number_open_invoices\": null,\n            \"synced_from_compliance\": 0,\n            \"facility_type\": \"Other\",\n            \"facility_name\": \"Distribution\",\n            \"sales_rep_required_for_outbound\": false      \n        }\n    ]\n}"
+        }
+      ]
+    }
+  ]
+}

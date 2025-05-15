@@ -1,8 +1,66 @@
 import json
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Literal, List
+from pydantic import BaseModel
 import os
+from datetime import datetime
+from typing import Literal
+from langchain_anthropic import ChatAnthropic
 
+llm = ChatAnthropic(
+    model="claude-3.5-sonnet",
+    temperature=0.5,
+    openai_api_key=os.getenv("ANTHROPIC_API_KEY"),
+)
+class LiteralAnalysisResult(BaseModel):
+    var_name: str
+    is_literal: bool
+    options: Optional[List[str]] = None
+def is_datetime(date_str):
+    known_formats = [
+        "%Y-%m-%d",
+        "%d-%m-%Y",
+        "%m/%d/%Y",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%dT%H:%M:%S",
+        "%Y-%m-%dT%H:%M:%SZ",
+        "%d %b %Y",
+        "%B %d, %Y",
+        "%Y/%m/%d %H:%M",
+        "%m-%d-%Y",
+        "%Y.%m.%d"
+    ]
+    
+    for fmt in known_formats:
+        try:
+            datetime.strptime(date_str, fmt)
+            return True
+        except ValueError:
+            continue
+    return False
+    
+def get_datetime_format(date_str):
+    known_formats = [
+        "%Y-%m-%d",
+        "%d-%m-%Y",
+        "%m/%d/%Y",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%dT%H:%M:%S",
+        "%Y-%m-%dT%H:%M:%SZ",
+        "%d %b %Y",
+        "%B %d, %Y",
+        "%Y/%m/%d %H:%M",
+        "%m-%d-%Y",
+        "%Y.%m.%d"
+    ]
+    
+    for fmt in known_formats:
+        try:
+            datetime.strptime(date_str, fmt)
+            return fmt
+        except ValueError:
+            continue
+    return None
 
 def format_literal_type(values):
     return 'Literal[' + ', '.join(f'"{v}"' for v in values) + ']'
@@ -95,8 +153,55 @@ FacilityType = Literal[
 """.strip()
 
 def main():
-    with open("package.json") as f:
+    with open("flourish.json") as f:
         collection = json.load(f)
+        
+    authType = collection["auth"]["type"]    
+        
+    itemGroup = collection["item"][0]
+    parameters = []
+    base_url = collection["variables"][0]["value"]
+    for item in itemGroup["item"]:
+        mcpSubServer = item["name"]
+        endpoints = item["item"]
+        for endpoint in endpoints:
+            toolName = endpoint["name"]
+            headers = {
+                "Accept": "application/json",
+                "Authorization": f"Basic {{token}}"
+            }
+            params = {}
+            requestEndpoint = base_url
+            response = ""
+            toolDocString = endpoint["request"].get("description", "").strip().replace('\n', ' ')
+            paths = endpoint["request"]["url"]["path"]
+            for path in paths:
+                requestEndpoint += (path + "/")
+                if path.startswith("{{") and path.endswith("}}"):
+                    path = path[2:-2]
+                    parameters.append(path)
+            if endpoint["request"]["url"].get("query"):
+                for queryParam in endpoint["request"]["url"]["query"]:
+                    key = queryParam["key"]
+                    value = queryParam.get("value", "")
+                    paramType = "str"
+                    if value == "true" or value == "false":
+                        value = value.lower() == "true"
+                        paramType = "bool"
+                    elif value.isdigit():
+                        value = int(value)
+                        paramType = "int"
+                    elif is_datetime(value):
+                        value = get_datetime_format(value)
+                        paramType = "datetime"
+                    if queryParam.get("description"):
+                       response = llm.with_structured_output(LiteralAnalysisResult).invoke(
+                           f"Is the following parameter a literal? {queryParam['description']}")
+                        
+                    
+                    params[key] = value
+                    parameters.append(key)
+    
 
     output = [
         "from fastmcp import FastMCP",
@@ -120,4 +225,9 @@ def main():
     print("✅ Generated: facilities_mcp.py")
 
 if __name__ == "__main__":
-    main()
+    with open("flourish.json") as f:
+        collection = json.load(f)
+    itemGroup = collection["item"][0]
+    with open("item_group.json", "w") as output_file:
+        json.dump(itemGroup, output_file, indent=4)
+
