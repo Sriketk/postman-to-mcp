@@ -6,9 +6,27 @@ import os
 from datetime import datetime
 from typing import Literal
 from langchain_anthropic import ChatAnthropic
+from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage
+import textwrap
 
 
+# Load environment variables from .env if present
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
+
+
+# llm = ChatOpenAI(
+#     model="gpt-4o",
+#     temperature=0,
+#     max_tokens=None,
+#     timeout=None,
+#     max_retries=2,   
+# )
 
 llm = ChatAnthropic(
     model="claude-3-5-sonnet-20240620",
@@ -16,16 +34,18 @@ llm = ChatAnthropic(
     api_key=os.getenv("ANTHROPIC_API_KEY"),
 )
 
+baseImports = """
+from fastmcp import FastMCP
+import requests
+from typing import Dict, Optional, List, Literal
+
+"""
+
+
 llm_with_prompt = llm.bind(messages=[
     SystemMessage(content="You are a helpful assistant in determining if the description of a field implies a fixed set of allowed values (e.g., multiple options to choose from, like 'Options: A, B, C'). "
     "If so, set is_literal to True. If the field is open-ended or accepts any value (like free text, booleans, numbers, or date limits), set is_literal to False. ")
 ])
-
-from pydantic import BaseModel, Field
-from typing import List, Optional
-
-
-
 
 class LiteralAnalysisResult(BaseModel):
     name : str = Field(..., description="Name of the field")
@@ -100,113 +120,95 @@ def format_literal_type(values):
     return 'Literal[' + ', '.join(f'"{v}"' for v in cleaned) + ']'
 
 
-
-def generate_facility_type():
-    return """
-from typing import Literal
-
-FacilityType = Literal[
-    "Laboratory",
-    "Processor",
-    "Grower",
-    "Dispensary",
-    "Distributor",
-    "Manufacturer",
-    "Other",
-    "Microbusiness"
-]
-""".strip()
-
 def main():
+    # Specify the directory where output files will be saved
+    output_dir = Path("subservers")  # Change this to your desired directory
+    output_dir.mkdir(exist_ok=True)  # Create the directory if it doesn't exist
+
     with open("flourish.json") as f:
         collection = json.load(f)
         
     authType = collection["auth"]["type"]    
-        
     itemGroup = collection["item"]
     base_url = collection["variable"][0]["value"]
+    
     for item in itemGroup:
         mcpSubServer = item["name"]
         endpoints = item["item"]
-        print("---------------------------------------------")
-        print(f"Generating MCP for {mcpSubServer}...")
-        for endpoint in endpoints:
-            parameters = []
-            toolName = endpoint["name"]
-            headers = {
-                "Accept": "application/json",
-                "Authorization": f"Basic {{token}}"
-            }
-            isliteral = False
-            requestEndpoint = base_url
-            response = ""
-            toolDocString = endpoint["request"].get("description", "").strip().replace('\n', ' ')
-            paths = endpoint["request"]["url"]["path"]
-            for path in paths:
-                requestEndpoint += (path + "/")
-                if path.startswith("{{") and path.endswith("}}"):
-                    path = path[2:-2]
-                    parameters.append(path)
-            if endpoint["request"]["url"].get("query"):
-                for queryParam in endpoint["request"]["url"]["query"]:
-                    key = queryParam["key"]
-                    value = queryParam.get("value", "")
-                    paramType = "str"
-                    isOptional = False
-                    if value == "true" or value == "false":
-                        value = value.lower() == "true"
-                        paramType = "bool"
-                    elif value.isdigit():
-                        value = int(value)
-                        paramType = "int"
-                    elif is_datetime(value):
-                        value = get_datetime_format(value)
-                        paramType = "datetime"
-                    if queryParam.get("description"):
-                        response = llm.with_structured_output(LiteralAnalysisResult).invoke(
-                           queryParam['description'])
-                        isOptional = response.optional
-                        if response.is_literal:
-                            print(f"response: {response}")
-                            # print(response.options)
-                            if response.type != "int" and paramType != "int" and response.type != "bool" and paramType != "bool":
-                                paramType = format_literal_type(response.options)
-                            # print(f"paramType: {paramType}")
-                    if isOptional:
-                        temp = f"{key}: Optional[{paramType}] = \"{value}\""
-                    else:
-                        temp = f"{key}: {paramType} = \"{value}\""
-                    parameters.append(temp)    
-            print(f"Tool Name: {toolName}")           
-            print(f"Request Endpoint: {requestEndpoint}")
-            print(f"Parameters: {parameters}")
-            print(f"Tool Docstring: {toolDocString}")
-            print("--------------------------------------------")
-
-                        
-                    
         
-    
+        # Define the full file path for each MCP server
+        output_filename = output_dir / f"{mcpSubServer}.py"
+        with open(output_filename, "w") as output_file:
+            baseServer = textwrap.dedent(f"""
+                {mcpSubServer}_mcp = FastMCP(name="{mcpSubServer}")
+                \n
+            """)
+            output_file.write(baseImports)
+            output_file.write(baseServer)
+            for endpoint in endpoints:
+                parameters = []
+                toolName = endpoint["name"]
+                headers = {
+                    "Accept": "application/json",
+                    "Authorization": f"Basic {{token}}"
+                }
+                isliteral = False
+                requestEndpoint = base_url
+                response = ""
+                toolDocString = endpoint["request"].get("description", "").strip().replace('\n', ' ')
+                paths = endpoint["request"]["url"]["path"]
+                
+                for path in paths:
+                    requestEndpoint += (path + "/")
+                    if path.startswith("{{") and path.endswith("}}"):
+                        path = path[2:-2]
+                        parameters.append(path)
+                
+                if endpoint["request"]["url"].get("query"):
+                    for queryParam in endpoint["request"]["url"]["query"]:
+                        key = queryParam["key"]
+                        value = queryParam.get("value", "")
+                        paramType = "str"
+                        isOptional = False
+                        if value == "true" or value == "false":
+                            value = value.lower() == "true"
+                            paramType = "bool"
+                        elif value.isdigit():
+                            value = int(value)
+                            paramType = "int"
+                        elif is_datetime(value):
+                            value = get_datetime_format(value)
+                            paramType = "datetime"
+                        if queryParam.get("description"):
+                            response = llm.with_structured_output(LiteralAnalysisResult).invoke(
+                                queryParam['description'])
+                            isOptional = response.optional
+                            if response.is_literal:
+                                if response.type != "int" and paramType != "int" and response.type != "bool" and paramType != "bool":
+                                    paramType = format_literal_type(response.options)
+                        if isOptional:
+                            temp = f"{key}: Optional[{paramType}] = \"{value}\""
+                        else:
+                            temp = f"{key}: {paramType} = \"{value}\""
+                        parameters.append(temp)
+                
+                baseServer = textwrap.dedent(f"""
+                    def {toolName}({', '.join(parameters)}) -> Dict:
+                        \"\"\"{toolDocString}\"\"\"
+                        response = requests.get(
+                            f"{requestEndpoint}",
+                            headers={{ "Accept": "application/json", "Authorization": f"Basic {{token}}" }},
+                            params={{k: v for k, v in {{
+                                {', '.join([param.split(': ')[0] + ': ' + param.split(': ')[1] for param in parameters if ':' in param])}
+                            }}.items() if v is not None}},
+                        )
+                        response.raise_for_status()
+                        return response.json()
+                    """)
+                output_file.write(baseServer)
+        
+        print(f"✅ Output for {mcpSubServer} written to {output_filename}")
 
-    output = [
-        "from fastmcp import FastMCP",
-        "import requests",
-        "from typing import Dict, Optional",
-        "",
-        "facilities_mcp = FastMCP(name=\"Facilities\")",
-        "",
-    ]
-
-    base_url = "https://api.flourishsoftware.com/external/api"
-    mcp_name = "packages_mcp"
-
-    print("✅ Generated: facilities_mcp.py")
 
 if __name__ == "__main__":
-    main() 
-    with open("flourish.json") as f:
-        collection = json.load(f)
-    itemGroup = collection["item"][0]
-    with open("item_group.json", "w") as output_file:
-        json.dump(itemGroup, output_file, indent=4)
-
+    main()

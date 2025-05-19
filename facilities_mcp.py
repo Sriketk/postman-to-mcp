@@ -30,7 +30,7 @@ def getfacilities(token: str, limit: Optional[int] = 50, offset: Optional[int] =
     """Get facilities based on query parameters."""
     response = requests.get(
         f"https://api.flourishsoftware.com/external/api/v1/facilities",
-        headers={ "Accept": "application/json", "Authorization": f"Basic {token}" }
+        headers={ "Accept": "application/json", "Authorization": f"Basic {token}" },
         params = {k: v for k, v in {
             "limit": limit,
             "offset": offset,
