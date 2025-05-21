@@ -8,7 +8,12 @@ from typing import Literal
 from langchain_anthropic import ChatAnthropic
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage
+from utils.states import LiteralAnalysisResult, PostEndpointAnalysisResult
+from utils.helper import is_datetime, get_datetime_format, format_literal_type
+from utils.constants import baseImports, literal_system_prompt, post_endpoint_system_prompt
 import textwrap
+import json
+
 
 
 # Load environment variables from .env if present
@@ -18,106 +23,16 @@ try:
 except ImportError:
     pass
 
-
-
-# llm = ChatOpenAI(
-#     model="gpt-4o",
-#     temperature=0,
-#     max_tokens=None,
-#     timeout=None,
-#     max_retries=2,   
-# )
-
 llm = ChatAnthropic(
     model="claude-3-5-sonnet-20240620",
     temperature=0.5,
+    max_tokens=2048,
     api_key=os.getenv("ANTHROPIC_API_KEY"),
 )
 
-baseImports = """
-from fastmcp import FastMCP
-import requests
-from typing import Dict, Optional, List, Literal
+llm_for_get = llm.bind(messages=[literal_system_prompt])
 
-"""
-
-
-llm_with_prompt = llm.bind(messages=[
-    SystemMessage(content="You are a helpful assistant in determining if the description of a field implies a fixed set of allowed values (e.g., multiple options to choose from, like 'Options: A, B, C'). "
-    "If so, set is_literal to True. If the field is open-ended or accepts any value (like free text, booleans, numbers, or date limits), set is_literal to False. ")
-])
-
-class LiteralAnalysisResult(BaseModel):
-    name : str = Field(..., description="Name of the field")
-    type: Literal["str", "int", "bool", "float", "datetime"] = Field(..., description="""Type of the field (e.g., string, integer, boolean)""")
-    is_literal: bool = Field( ..., description=(
-            "Set to True if the description implies a fixed set of allowed values (e.g., multiple options to choose from, like 'Options: A, B, C'). "
-            "Set to False if the field is open-ended or accepts any value (like free text, numbers, or date limits)."
-        ) )
-    optional: bool = Field(
-        default=False,
-        description="Set to True if the field is optional (e.g., not required)."
-    )
-    options: Optional[List[str]] = Field(
-        default=None,
-        description="The list of literal string options (only if is_literal is True). Omit or set to null if not a literal."
-    )
-
-def is_datetime(date_str):
-    known_formats = [
-        "%Y-%m-%d",
-        "%d-%m-%Y",
-        "%m/%d/%Y",
-        "%Y-%m-%d %H:%M:%S",
-        "%Y-%m-%dT%H:%M:%S",
-        "%Y-%m-%dT%H:%M:%SZ",
-        "%d %b %Y",
-        "%B %d, %Y",
-        "%Y/%m/%d %H:%M",
-        "%m-%d-%Y",
-        "%Y.%m.%d"
-    ]
-    
-    for fmt in known_formats:
-        try:
-            datetime.strptime(date_str, fmt)
-            return True
-        except ValueError:
-            continue
-    return False
-    
-def get_datetime_format(date_str):
-    known_formats = [
-        "%Y-%m-%d",
-        "%d-%m-%Y",
-        "%m/%d/%Y",
-        "%Y-%m-%d %H:%M:%S",
-        "%Y-%m-%dT%H:%M:%S",
-        "%Y-%m-%dT%H:%M:%SZ",
-        "%d %b %Y",
-        "%B %d, %Y",
-        "%Y/%m/%d %H:%M",
-        "%m-%d-%Y",
-        "%Y.%m.%d"
-    ]
-    
-    for fmt in known_formats:
-        try:
-            datetime.strptime(date_str, fmt)
-            return fmt
-        except ValueError:
-            continue
-    return None
-
-def format_literal_type(values):
-    if not values:
-        return None  # or return "" if you prefer empty string
-
-    cleaned = [v for v in values if v and v.strip()]
-    if not cleaned:
-        return None
-
-    return 'Literal[' + ', '.join(f'"{v}"' for v in cleaned) + ']'
+llm_for_post = llm.bind(messages=[post_endpoint_system_prompt])
 
 
 def main():
@@ -127,13 +42,26 @@ def main():
 
     with open("flourish.json") as f:
         collection = json.load(f)
-        
+    with open("server.py", "w") as output_file:
+
+        mainServerBase = textwrap.dedent(f"""
+        from typing import Any, Dict, Literal
+        from fastapi import Request, HTTPException
+        from fastmcp import FastMCP
+        import os
+        import requests
+        import base64
+        from datetime import datetime
+        from pydantic import BaseModel
+        mcp = FastMCP(\"{collection['info']['name']}\")
+        """)
+        output_file.write(mainServerBase)
     authType = collection["auth"]["type"]    
     itemGroup = collection["item"]
     base_url = collection["variable"][0]["value"]
     
     for item in itemGroup:
-        mcpSubServer = item["name"]
+        mcpSubServer = item["name"].replace(" ", "_")
         endpoints = item["item"]
         
         # Define the full file path for each MCP server
@@ -146,14 +74,15 @@ def main():
             output_file.write(baseImports)
             output_file.write(baseServer)
             for endpoint in endpoints:
-                parameters = []
+                parameters = ["token: str"]
+                body = {}
                 toolName = endpoint["name"]
                 headers = {
                     "Accept": "application/json",
                     "Authorization": f"Basic {{token}}"
                 }
                 isliteral = False
-                requestEndpoint = base_url
+                requestEndpoint = base_url + '/'
                 response = ""
                 toolDocString = endpoint["request"].get("description", "").strip().replace('\n', ' ')
                 paths = endpoint["request"]["url"]["path"]
@@ -163,8 +92,7 @@ def main():
                     if path.startswith("{{") and path.endswith("}}"):
                         path = path[2:-2]
                         parameters.append(path)
-                
-                if endpoint["request"]["url"].get("query"):
+                if endpoint["request"]["method"] == "GET" and endpoint["request"]["url"].get("query"):
                     for queryParam in endpoint["request"]["url"]["query"]:
                         key = queryParam["key"]
                         value = queryParam.get("value", "")
@@ -180,7 +108,7 @@ def main():
                             value = get_datetime_format(value)
                             paramType = "datetime"
                         if queryParam.get("description"):
-                            response = llm.with_structured_output(LiteralAnalysisResult).invoke(
+                            response = llm_for_get.with_structured_output(LiteralAnalysisResult).invoke(
                                 queryParam['description'])
                             isOptional = response.optional
                             if response.is_literal:
@@ -191,22 +119,61 @@ def main():
                         else:
                             temp = f"{key}: {paramType} = \"{value}\""
                         parameters.append(temp)
-                
+                elif endpoint["request"]["method"] == "POST" or endpoint["request"]["method"] == "PUT":
+                    postEndpointDescription = ""
+                    postEndpointSampleBody = ""
+                    if endpoint["request"].get("description"):
+                        postEndpointDescription = endpoint["request"]["description"]
+                    if endpoint["request"].get("body"):
+                        postEndpointSampleBody = endpoint["request"]["body"]["raw"]
+                    response = llm_for_post.with_structured_output(PostEndpointAnalysisResult).invoke(
+                        f"this is the description of the body for the endpoint {postEndpointDescription}, "
+                        f"and this is a sample body for this endpoint {postEndpointSampleBody}"
+                    )
+                    toolDocString = response.description
+                    requestFields = response.requestFields
+                    
+                    for field in requestFields:
+                        isLiteral = field.is_literal
+                        isOptional = field.optional
+                        if isLiteral:
+                            literal_type = format_literal_type(field.options)
+                            if isOptional:
+                                parameters.append(f"{field.name}: Optional[{literal_type}] = \"{field.defaultValue}\"")
+                            else:
+                                parameters.append(f"{field.name}: {literal_type} = \"{field.defaultValue}\"")
+                        else:
+                            if isOptional:
+                                parameters.append(f"{field.name}: Optional[{field.type}] = \"{field.defaultValue}\"")
+                            else:
+                                parameters.append(f"{field.name}: {field.type} = \"{field.defaultValue}\"")
+                params = {}
+                for param in parameters:
+                    param_name = param.split(':')[0].strip()
+                    params[param_name] = param_name
+                params_str = ", ".join([f"'{k}': {k}" for k in [param.split(':')[0].strip() for param in parameters]])
                 baseServer = textwrap.dedent(f"""
-                    def {toolName}({', '.join(parameters)}) -> Dict:
+                    def {toolName.replace(' ', '_')}({', '.join(parameters)}) -> Dict:
                         \"\"\"{toolDocString}\"\"\"
-                        response = requests.get(
+                        params = {{{params_str}}}
+                        response = requests.{endpoint["request"]["method"].lower()}(
                             f"{requestEndpoint}",
                             headers={{ "Accept": "application/json", "Authorization": f"Basic {{token}}" }},
-                            params={{k: v for k, v in {{
-                                {', '.join([param.split(': ')[0] + ': ' + param.split(': ')[1] for param in parameters if ':' in param])}
-                            }}.items() if v is not None}},
+                            params=params
                         )
                         response.raise_for_status()
                         return response.json()
                     """)
                 output_file.write(baseServer)
-        
+        with open("server.py", "r+") as output_file:
+            content = output_file.read()
+            output_file.seek(0)
+            output_file.write(f"from subservers.{mcpSubServer} import {mcpSubServer}_mcp\n")
+            output_file.write(content)
+            
+        # Write mount statements in a separate section
+        with open("server.py", "a") as output_file:
+            output_file.write(f"\n# Mount {mcpSubServer} Subservers\nmcp.mount(\"{mcpSubServer}\", {mcpSubServer}_mcp)\n")
         print(f"✅ Output for {mcpSubServer} written to {output_filename}")
 
 

@@ -1,1 +1,23 @@
-content="Neon is a serverless, fault-tolerant, and scalable Postgres database service designed for modern cloud applications. Here are some key features and aspects of Neon:\n\n1. Serverless: Neon automatically scales compute and storage resources based on demand, eliminating the need for manual provisioning and management.\n\n2. Postgres-compatible: It's fully compatible with PostgreSQL, allowing users to leverage existing tools and knowledge.\n\n3. Branching: Neon offers instant database branching, allowing developers to create isolated environments for testing and development quickly.\n\n4. Autoscaling: The database scales compute and storage resources automatically based on workload.\n\n5. Separation of compute and storage: This architecture allows for independent scaling of compute and storage resources.\n\n6. Multi-cloud: Neon is designed to work across multiple cloud providers.\n\n7. Time travel: Users can access historical states of their database, enabling point-in-time recovery.\n\n8. Cost-effective: With its serverless model, users only pay for the resources they actually use.\n\n9. Developer-friendly: Neon provides a simple, intuitive interface and integrations with popular development tools.\n\n10. High availability: The service is designed for fault tolerance and high availability.\n\n11. Security: Neon includes built-in security features like encryption at rest and in transit.\n\nNeon aims to simplify database management for developers while providing the power and flexibility of PostgreSQL. It's particularly well-suited for applications with variable workloads or those requiring rapid development and testing cycles." additional_kwargs={} response_metadata={'id': 'msg_01Y2jYR5PiFGkJCmVHLMMEXq', 'model': 'claude-3-5-sonnet-20240620', 'stop_reason': 'end_turn', 'stop_sequence': None, 'usage': {'cache_creation_input_tokens': 0, 'cache_read_input_tokens': 0, 'input_tokens': 14, 'output_tokens': 341, 'server_tool_use': None}, 'model_name': 'claude-3-5-sonnet-20240620'} id='run--7da6c95b-c2dc-4e33-8955-d78c26d3fb78-0' usage_metadata={'input_tokens': 14, 'output_tokens': 341, 'total_tokens': 355, 'input_token_details': {'cache_read': 0, 'cache_creation': 0}}
+description='This endpoint creates a new retail customer with various personal and contact details.'
+requestFields=[
+LiteralAnalysisResult(name='email', type='str', is_literal=False, optional=False, options=None), 
+LiteralAnalysisResult(name='alternate_email', type='str', is_literal=False, optional=True, options=None),
+LiteralAnalysisResult(name='first_name', type='str', is_literal=False, optional=False, options=None), 
+LiteralAnalysisResult(name='last_name', type='str', is_literal=False, optional=False, options=None), 
+LiteralAnalysisResult(name='middle_name', type='str', is_literal=False, optional=True, options=None),
+LiteralAnalysisResult(name='preferred_name', type='str', is_literal=False, optional=True, options=None), 
+LiteralAnalysisResult(name='dob', type='datetime', is_literal=False, optional=False, options=None),
+LiteralAnalysisResult(name='allergies', type='str', is_literal=False, optional=True, options=None),
+LiteralAnalysisResult(name='state', type='str', is_literal=True, optional=True, options=None), 
+LiteralAnalysisResult(name='medical_card_state', type='str', is_literal=True, optional=True, options=None),
+LiteralAnalysisResult(name='medical_card_expiration', type='datetime', is_literal=False, optional=True, options=None),
+LiteralAnalysisResult(name='patient_id', type='str', is_literal=False, optional=True, options=None),
+LiteralAnalysisResult(name='phone', type='str', is_literal=False, optional=True, options=None), 
+LiteralAnalysisResult(name='home_phone', type='str', is_literal=False, optional=True, options=None),
+LiteralAnalysisResult(name='alternate_phone', type='str', is_literal=False, optional=True, options=None),
+LiteralAnalysisResult(name='address', type='List[str]', is_literal=False, optional=True, options=None), 
+LiteralAnalysisResult(name='is_verified', type='bool', is_literal=False, optional=True, options=None),
+LiteralAnalysisResult(name='state_id', type='str', is_literal=False, optional=True, options=None),
+LiteralAnalysisResult(name='state_id_expiration_timestamp', type='datetime', is_literal=False, optional=True, options=None),
+LiteralAnalysisResult(name='customer_group', type='str', is_literal=True, optional=True, options=['veteran', 'student', 'first responder', 'employee', 'industry']), 
+LiteralAnalysisResult(name='customer_disciplinary_status', type='str', is_literal=True, optional=True, options=['no issues', 'warning - level 1', 'warning - level 2', 'banned'])]
