@@ -12,6 +12,7 @@ Facilities_mcp = FastMCP(name="Facilities")
 def GetFacility(token: str, facility_id) -> Dict:
     """Get a single facility by `facility_id`."""
     params = {'token': token, 'facility_id': facility_id}
+    body = {}
     response = requests.get(
         f"https://app.flourishsoftware.com/external/api/v1/facilities/{{facility_id}}/",
         headers={ "Accept": "application/json", "Authorization": f"Basic {token}" },
@@ -23,6 +24,7 @@ def GetFacility(token: str, facility_id) -> Dict:
 def GetFacilities(token: str, limit: int = "50", offset: int = "0", facility_type: Literal["Laboratory", "Processor", "Grower", "Dispensary", "Distributor", "Manufacturer", "Other", "Microbusiness"] = "Dispensary", active: Optional[bool] = "True") -> Dict:
     """Get facilities based on query parameters."""
     params = {'token': token, 'limit': limit, 'offset': offset, 'facility_type': facility_type, 'active': active}
+    body = {}
     response = requests.get(
         f"https://app.flourishsoftware.com/external/api/v1/facilities/",
         headers={ "Accept": "application/json", "Authorization": f"Basic {token}" },

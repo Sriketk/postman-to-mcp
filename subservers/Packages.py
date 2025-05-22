@@ -12,6 +12,7 @@ Packages_mcp = FastMCP(name="Packages")
 def GetPackageDetails(token: str) -> Dict:
     """Get the origin info of a cannabis package by its ID."""
     params = {'token': token}
+    body = {}
     response = requests.get(
         f"https://app.flourishsoftware.com/external/api/v1/packages/:package_id/details/",
         headers={ "Accept": "application/json", "Authorization": f"Basic {token}" },
@@ -23,6 +24,7 @@ def GetPackageDetails(token: str) -> Dict:
 def GetPackages(token: str, limit: int = "50", offset: int = "0", package_id: str = "1A40X0900002906000099999", package_status: Literal["Created", "Assigned to order", "Shipped", "Consumed", "Archived", "Cancelled"] = "Shipped", include_origin_harvest: Optional[bool] = "False", last_updated_timestamp_start: str = "2020-01-02T15:04:05.000Z", last_updated_timestamp_end: str = "2020-01-03T15:04:05.000Z") -> Dict:
     """Get current cannabis packages for a single facility. `package_id` is the unique identifier for the package record returned."""
     params = {'token': token, 'limit': limit, 'offset': offset, 'package_id': package_id, 'package_status': package_status, 'include_origin_harvest': include_origin_harvest, 'last_updated_timestamp_start': last_updated_timestamp_start, 'last_updated_timestamp_end': last_updated_timestamp_end}
+    body = {}
     response = requests.get(
         f"https://app.flourishsoftware.com/external/api/v1/packages/",
         headers={ "Accept": "application/json", "Authorization": f"Basic {token}" },
@@ -34,6 +36,7 @@ def GetPackages(token: str, limit: int = "50", offset: int = "0", package_id: st
 def GetPackage(token: str, include_origin_harvest: Optional[bool] = "False") -> Dict:
     """Get a cannabis package by it's ID in Flourish."""
     params = {'token': token, 'include_origin_harvest': include_origin_harvest}
+    body = {}
     response = requests.get(
         f"https://app.flourishsoftware.com/external/api/v1/packages/{package_id}/",
         headers={ "Accept": "application/json", "Authorization": f"Basic {token}" },

@@ -134,6 +134,7 @@ def main():
                     requestFields = response.requestFields
                     
                     for field in requestFields:
+                        body[field.name] = field.name
                         isLiteral = field.is_literal
                         isOptional = field.optional
                         if isLiteral:
@@ -152,14 +153,19 @@ def main():
                     param_name = param.split(':')[0].strip()
                     params[param_name] = param_name
                 params_str = ", ".join([f"'{k}': {k}" for k in [param.split(':')[0].strip() for param in parameters]])
+                body_str = ", ".join([f"'{k}': {k}" for k in body.keys()])
+                request_params = f"params=params" if endpoint["request"]["method"] == "GET" else ""
+                request_body = f"data=body" if endpoint["request"]["method"] in ["POST", "PUT"] else ""
+                request_args = ", ".join(filter(None, [request_params, request_body]))
                 baseServer = textwrap.dedent(f"""
                     def {toolName.replace(' ', '_')}({', '.join(parameters)}) -> Dict:
                         \"\"\"{toolDocString}\"\"\"
                         params = {{{params_str}}}
+                        body = {{{body_str}}}
                         response = requests.{endpoint["request"]["method"].lower()}(
                             f"{requestEndpoint}",
                             headers={{ "Accept": "application/json", "Authorization": f"Basic {{token}}" }},
-                            params=params
+                            {request_args}
                         )
                         response.raise_for_status()
                         return response.json()
@@ -175,7 +181,11 @@ def main():
         with open("server.py", "a") as output_file:
             output_file.write(f"\n# Mount {mcpSubServer} Subservers\nmcp.mount(\"{mcpSubServer}\", {mcpSubServer}_mcp)\n")
         print(f"✅ Output for {mcpSubServer} written to {output_filename}")
-
+    with open("server.py", "a") as output_file:
+        output_file.write(f"\n# Mount {mcpSubServer} Subservers\nmcp.mount(\"{mcpSubServer}\", {mcpSubServer}_mcp)\n")
+        print(f"✅ Output for {mcpSubServer} written to {output_filename}")
 
 if __name__ == "__main__":
     main()
+    with open("server.py", "a") as output_file:
+        output_file.write("\nif __name__ == \"__main__\":\n    mcp.run(transport='stdio')\n")

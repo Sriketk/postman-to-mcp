@@ -12,6 +12,7 @@ Vehicles_mcp = FastMCP(name="Vehicles")
 def GetVehicles(token: str, limit: int = "50", offset: int = "0") -> Dict:
     """Get all of the vehicles associated with a given facility."""
     params = {'token': token, 'limit': limit, 'offset': offset}
+    body = {}
     response = requests.get(
         f"https://app.flourishsoftware.com/external/api/v1/vehicles/",
         headers={ "Accept": "application/json", "Authorization": f"Basic {token}" },
